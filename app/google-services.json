@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "85530487418",
+    "project_id": "e-hailing-um",
+    "storage_bucket": "e-hailing-um.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85530487418:android:cc749991304caa4213e9c3",
+        "android_client_info": {
+          "package_name": "com.example.e_hailing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "85530487418-ntk24e8bra639ocsa63vlske6bnj9t8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWV3rcuIJHLU7EYBCOO_cX_goOLWjAGOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "85530487418-ntk24e8bra639ocsa63vlske6bnj9t8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

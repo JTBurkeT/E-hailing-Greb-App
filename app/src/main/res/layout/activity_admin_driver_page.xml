@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#061251"
+    android:contentDescription="@string/appbar_scrolling_view_behavior"
+    tools:context=".adminDriverPage">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="88dp"
+        android:layout_alignBottom="@id/scroll"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="-84dp"
+        android:background="#040D3E">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="27dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="@string/hello_blank_fragment"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="#03A9F4" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/removeBtn"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="199dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="@string/hello_blank_fragment"
+            android:src="@android:drawable/stat_notify_more"
+            app:backgroundTint="#03A9F4" />
+
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/scroll"
+        android:layout_width="412dp"
+        android:layout_height="603dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="43dp"
+        android:layout_marginBottom="85dp"
+        android:contentDescription="@string/hello_blank_fragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/adminbg"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="730dp"
+                android:layout_height="47dp"
+                android:background="#0056A8EA"
+                android:backgroundTint="#2196F3"
+                android:text="Driver Details"
+                android:textAlignment="center"
+                android:textColor="#FDFCFC"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TableRow
+                android:id="@+id/title"
+                android:layout_width="730dp"
+                android:layout_height="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView9"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Name"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Status"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/capacity"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Capacity"
+                    android:textAlignment="center" />
+
+
+                <TextView
+                    android:id="@+id/currentLongLa"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Current Location"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/customer"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Customer"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="Rating"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/numberOfRating"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:background="@drawable/border"
+                    android:gravity="center"
+                    android:text="No.of Rating"
+                    android:textAlignment="center" />
+
+            </TableRow>
+
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="730dp"
+                android:layout_height="532dp"
+                android:background="#005CB0F3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+
+            </TableLayout>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</RelativeLayout>

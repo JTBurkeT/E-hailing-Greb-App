@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B0E0F6"
+    tools:context=".AdminMainPage">
+
+    <ImageButton
+        android:id="@+id/customerPageBtn"
+        android:layout_width="260dp"
+        android:layout_height="121dp"
+        android:background="#F6F4F4"
+        android:contentDescription="@string/hello_blank_fragment"
+        android:src="@drawable/profileicon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/driverPageBtn"
+        android:layout_width="260dp"
+        android:layout_height="121dp"
+        android:contentDescription="@string/hello_blank_fragment"
+        android:src="@drawable/adminbg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.451"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customerPageBtn"
+        app:layout_constraintVertical_bias="0.475" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DriverDetails"
+        android:textColor="#FDFBFB"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/driverPageBtn"
+        app:layout_constraintEnd_toEndOf="@+id/driverPageBtn"
+        app:layout_constraintStart_toStartOf="@+id/driverPageBtn"
+        app:layout_constraintTop_toTopOf="@+id/driverPageBtn" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CustomerDetails"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/customerPageBtn"
+        app:layout_constraintEnd_toEndOf="@+id/customerPageBtn"
+        app:layout_constraintStart_toStartOf="@+id/customerPageBtn"
+        app:layout_constraintTop_toTopOf="@+id/customerPageBtn" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="268dp"
+        android:layout_height="192dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.105">
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fontFamily="monospace"
+            android:text="UBAR"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="casual"
+            android:text="AdminDashboard"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="30dp">
+
+
+    <TextView
+        android:id="@+id/requestTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Please Make Your Request"
+        android:textAlignment="center" />
+
+    <ImageView
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:src="@drawable/caricon"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_username"
+        android:text="UserName: "
+        android:padding="10dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/round_edittext"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_arrivaltime"
+        android:hint="Enter Expected Arrival Time"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_edittext"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_capacity"
+        android:hint="Enter Capacity"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_edittext"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_updateconfirm"
+        android:text="Update/confirm"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_button"/>
+
+</LinearLayout>
