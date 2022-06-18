@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/*
+This class is to create the admin using sqlite and save it into the local memory
+We created one admin with id admin123 and password 123 while opening the main activity
+ */
+
 public class adminDataBase extends SQLiteOpenHelper {
     public adminDataBase(Context context) {
         super(context, "AdminData.db", null, 1);
@@ -20,11 +25,13 @@ public class adminDataBase extends SQLiteOpenHelper {
         DB.insert("AdminData", null, contentValues);
     }
 
+    //This method id to avoid creating the duplicate database
     @Override
     public void onUpgrade(SQLiteDatabase DB, int i, int i1) {
         DB.execSQL("drop Table if exists AdminData");
     }
 
+    //this method is to create the admin, this method was call at main activity
     public void insertAdmin() {
         SQLiteDatabase DB = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -34,6 +41,7 @@ public class adminDataBase extends SQLiteOpenHelper {
 
     }
 
+    //this method is to get the password correspond with the name/id of the admin
     public String getPassword(String name) {
         String res = "";
         SQLiteDatabase DB = this.getWritableDatabase();

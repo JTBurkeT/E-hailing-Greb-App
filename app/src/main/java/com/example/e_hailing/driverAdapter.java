@@ -10,18 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-
+/*
+This class is to create the driverAdapter which adapt the information of the driver object to the recycler view
+ */
 public class driverAdapter extends RecyclerView.Adapter<driverAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<Driver> list;
-// TODO : changes
 
+//The Constructor of the driverAdapter
     public driverAdapter(Context context, ArrayList<Driver> list) {
         this.context = context;
         this.list = list;
     }
 
+    //Set the viewHolder which is the card view
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,6 +32,7 @@ public class driverAdapter extends RecyclerView.Adapter<driverAdapter.MyViewHold
         return  new MyViewHolder(v);
     }
 
+    //Bind the data of the customer object with the customer card view
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
@@ -41,11 +45,14 @@ public class driverAdapter extends RecyclerView.Adapter<driverAdapter.MyViewHold
 
     }
 
+    //to get the size of the list
     @Override
     public int getItemCount() {
         return list.size();
     }
 
+
+    // use to initialize the widget in the driver card view
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView Name, capacity, arrivalTime ,reputationTxt;

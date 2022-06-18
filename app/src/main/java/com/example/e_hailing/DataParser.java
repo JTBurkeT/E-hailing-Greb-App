@@ -11,9 +11,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+/*
+This class is to parse the data that receive form the google distance matrix Api in form of JSON file and obtain the time and duration form it
+ */
 public class DataParser {
 
+
+    //This is return hashMap with key duration,distance and it correspond value
     private HashMap<String, String> getDuration(JSONArray googleDirectionsJson) {
         HashMap<String, String> googleDirectionsMap = new HashMap<>();
         String duration = "";
@@ -38,6 +42,8 @@ try{
         return googleDirectionsMap;
     }
 
+
+    //This is method  to get the details form the JSON file
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson)
     {
         HashMap<String, String> googlePlaceMap = new HashMap<>();
@@ -77,6 +83,8 @@ try{
         return googlePlaceMap;
 
     }
+
+    //This is to return the list of HashMap with the place details
     private List<HashMap<String, String>>getPlaces(JSONArray jsonArray)
     {
         int count = jsonArray.length();
@@ -95,6 +103,7 @@ try{
         return placelist;
     }
 
+    //This method is to parse the data from the JSON file data into list of hashMap
     public List<HashMap<String, String>> parse(String jsonData)
     {
         JSONArray jsonArray = null;
@@ -111,6 +120,7 @@ try{
         return getPlaces(jsonArray);
     }
 
+    //This is method to get the direction data from the string of json data
     public HashMap<String, String> parseDirections(String jsonData) {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
@@ -124,6 +134,8 @@ try{
         return getDuration(jsonArray);
     }
 
+
+    //this is to parse the jsom data into array of string
     public String[] parseDirections1(String jsonData) {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
@@ -138,6 +150,9 @@ try{
         return getPaths(jsonArray);
     }
 
+
+
+    //This method is to get the route from one origin to its destination and return it as an array
     public String[] getPaths(JSONArray googleStepsJson) {
         int count = googleStepsJson.length();
         String[] polylines = new String[count];
@@ -151,7 +166,7 @@ try{
         }
         return polylines;
     }
-
+    //This method is to get the route from one origin to its destination and return it as a String
     public String getPath(JSONObject googlePathJson) {
         String polyline = "";
         try {

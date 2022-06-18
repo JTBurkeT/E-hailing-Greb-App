@@ -1,5 +1,9 @@
 package com.example.e_hailing;
 
+
+/*
+This class is the driver class represent the object of the driver
+ */
 public class Driver {
     private String name, status , currentLongLa, customer, arrivedTime;
     private int capacity,numberOfRating;
@@ -7,7 +11,7 @@ public class Driver {
     public Driver(){
 
     }
-
+ //The constructor of the driver object
     public Driver(String name, String status, String currentLongLa, String customer, int capacity, double rating) {
         this.name = name;
         this.status = status;
@@ -18,7 +22,7 @@ public class Driver {
         this.arrivedTime="";
         this.numberOfRating=0;
     }
-
+//The getter and setter method of the object
     public String getCurrentLongLa() {
         return currentLongLa;
     }

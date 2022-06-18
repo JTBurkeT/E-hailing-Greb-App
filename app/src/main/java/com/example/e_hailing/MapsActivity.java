@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.util.NumberUtils;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -61,16 +63,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/*
+This class set is created to store the value of time and the boolean whether the driver is suitable or not
+ */
 class Set{
     //store the boolean and time when receiving the result from the requested API
     private Boolean check;
     private int time;
+
+    //The constructor
     public Set(Boolean check, int time){
         this.time=time;
         this.check=check;
     }
 
+    //Getter and setter method
     public Boolean getCheck() {
         return check;
     }
@@ -88,6 +98,9 @@ class Set{
     }
 }
 
+/*
+This is the page where user can make the request and search for driver, comment, search the destination and etc
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -108,8 +121,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double latitude, longitude;
     double end_latitude, end_longitude;
     EditText etSource;
-    Button btshow, btnComment;
-    Dialog myDialog, commentDialog;
+    Button btshow, btnComment, logoutBtn;
+    Dialog myDialog, commentDialog, logoutDialog;
     List<Address> addressList;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -126,6 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String customerName, driverName;
     ArrayList<String> all4Driver, all6Driver;
     String longLa;
+    EditText tf_location;
 
 
     @Override
@@ -144,12 +158,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         temp = new ArrayList<>();
         filtered = new ArrayList<>();
         duration = new ArrayList<>();
+        tf_location = findViewById(R.id.TF_location);
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
 
         }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -179,6 +196,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+    //This is the method to display the app time for the user
     public void doWork() {
         runOnUiThread(new Runnable() {
             public void run() {
@@ -200,6 +219,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    //This inner class is to create the multi thread which sleep one second and call the function again to set the time
     class CountDownRunner implements Runnable {
         // @Override
         public void run() {
@@ -215,6 +235,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+    //This is to get the permission to read the user location
     @SuppressLint({"MissingPermission", "MissingSuperCall"})
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -256,12 +278,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+
+    //This is to build google API client
     protected synchronized void bulidGoogleApiClient() {
         client = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
         client.connect();
 
     }
 
+
+    //This iis to read the current location of the user and display it as the marker
     @Override
     public void onLocationChanged(Location location) {
 
@@ -287,14 +313,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+    //This is the method which defined the function button
     @SuppressLint("MissingPermission")
     public void onClick(View v) {
         Object dataTransfer[] = new Object[2];
         GetDirectionsData getDirectionsData = new GetDirectionsData();
 
         switch (v.getId()) {
+            //The search button is to search the destination of the customer and display the route within the origin and destination, and also get the duration form the origin to the deastination
+
             case R.id.B_search:
-                EditText tf_location = findViewById(R.id.TF_location);
+                tf_location = findViewById(R.id.TF_location);
                 String location = tf_location.getText().toString();
 
 
@@ -355,6 +385,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 break;
 
+                //This is to set the function of the button which will show all the 4-pax driver
             case R.id.fourDriver:
 
                 getAll4Location();
@@ -364,6 +395,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.setMyLocationEnabled(true);
                 }
 
+                //Here is to make a delay so that all the data already fetched from the database
                 final Handler handler = new Handler(Looper.getMainLooper());
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -381,7 +413,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(5));
                 break;
 
-
+            //This is to set the function of the button which will show all the 6-pax driver
             case R.id.sixDriver:
 
                 getAll6Location();
@@ -391,6 +423,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.setMyLocationEnabled(true);
                 }
 
+                //Here is to make a delay so that all the data already fetched from the database
                 final Handler handler2 = new Handler(Looper.getMainLooper());
                 handler2.postDelayed(new Runnable() {
                     @Override
@@ -408,235 +441,208 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
 
 
+                //this is to set the function to open the request bottom dialog
             case R.id.searchDriver:
+
+
                 btnComment = findViewById(R.id.btnComment);
-                btshow = findViewById(R.id.searchDriver);
-                btshow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MapsActivity.this);
-                        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
-                        bottomSheetDialog.setCanceledOnTouchOutside(false);
 
-                        TextView etUsername = bottomSheetDialog.findViewById(R.id.et_username);
-                        EditText et_arrivaltime = bottomSheetDialog.findViewById(R.id.et_arrivaltime);
-                        EditText et_capacity = bottomSheetDialog.findViewById(R.id.et_capacity);
-                        Button btUpdateconfirm = bottomSheetDialog.findViewById(R.id.bt_updateconfirm);
-                        etUsername.setText(etUsername.getText().toString() + customerName);
+                        if (tf_location.getText().toString().equals("")) {
+                            Toast.makeText(MapsActivity.this, "Please enter the Destination first", Toast.LENGTH_SHORT).show();
+                        } else {
 
 
-                        myDialog = new Dialog(MapsActivity.this);
+                            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MapsActivity.this);
+                            bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog);
+                            bottomSheetDialog.setCanceledOnTouchOutside(false);
 
-                        btUpdateconfirm.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                            TextView etUsername = bottomSheetDialog.findViewById(R.id.et_username);
+                            EditText et_arrivaltime = bottomSheetDialog.findViewById(R.id.et_arrivaltime);
+                            EditText et_capacity = bottomSheetDialog.findViewById(R.id.et_capacity);
+                            Button btUpdateconfirm = bottomSheetDialog.findViewById(R.id.bt_updateconfirm);
+                            etUsername.setText(etUsername.getText().toString() + customerName);
 
 
-                                driverAdapter driverAdapter;
-                                myDialog.setContentView(R.layout.custompopup);
-                                setToPending(customerName);
-                                TextView textView = (TextView) myDialog.findViewById(R.id.txtclose);
+                            myDialog = new Dialog(MapsActivity.this);
 
-                                Button conDriver = (Button) myDialog.findViewById(R.id.btn_confirmDriver);
 
-                                RecyclerView recyclerView = myDialog.findViewById(R.id.driverList);
-                                recyclerView.setHasFixedSize(true);
-                                recyclerView.setLayoutManager(new LinearLayoutManager(MapsActivity.this));
-                                driverAdapter = new driverAdapter(MapsActivity.this, filtered);
-                                recyclerView.setAdapter(driverAdapter);
-                                EditText driverNameTxt = myDialog.findViewById(R.id.driverNameTxt);
-                                Button btn_confirmDriver = myDialog.findViewById(R.id.btn_confirmDriver);
-                                ProgressDialog pd=new ProgressDialog(MapsActivity.this);
-                                pd.setMessage("Searching Suitable Driver");
-                                pd.setCancelable(false);
 
-                                try{
-                                    if(et_arrivaltime.getText().toString().equals("")||et_capacity.getText().toString().equals("")){
-                                        Toast.makeText(MapsActivity.this, "Please re-enter the field provided ", Toast.LENGTH_SHORT).show();
-                                    }else{
-                                        time = et_arrivaltime.getText().toString();
-                                        capacity = Integer.parseInt(et_capacity.getText().toString());
-                                        Thread thread= new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                databaseReference.addValueEventListener(new ValueEventListener() {
+                            //This code is to make the searching request and display the suitable driver
+                            btUpdateconfirm.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+
+                                    driverAdapter driverAdapter;
+                                    myDialog.setContentView(R.layout.custompopup);
+                                    setToPending(customerName);
+                                    TextView txtClose = myDialog.findViewById(R.id.txtclose);
+                                    TextView priceTxt = myDialog.findViewById(R.id.priceTxt);
+
+                                    Button conDriver = (Button) myDialog.findViewById(R.id.btn_confirmDriver);
+
+                                    RecyclerView recyclerView = myDialog.findViewById(R.id.driverList);
+                                    recyclerView.setHasFixedSize(true);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(MapsActivity.this));
+                                    driverAdapter = new driverAdapter(MapsActivity.this, filtered);
+                                    recyclerView.setAdapter(driverAdapter);
+                                    EditText driverNameTxt = myDialog.findViewById(R.id.driverNameTxt);
+                                    Button btn_confirmDriver = myDialog.findViewById(R.id.btn_confirmDriver);
+                                    ProgressDialog pd = new ProgressDialog(MapsActivity.this);
+                                    pd.setMessage("Searching Suitable Driver");
+                                    pd.setCancelable(false);
+                                    priceTxt.setText("Price: " + round(getPrice(capacity, customerToDestination), 2));
+
+                                    txtClose.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            myDialog.dismiss();
+                                        }
+                                    });
+
+
+                                    try {
+                                        if (et_arrivaltime.getText().toString().equals("") || et_capacity.getText().toString().equals("")) {
+                                            Toast.makeText(MapsActivity.this, "Please re-enter the field provided ", Toast.LENGTH_SHORT).show();
+                                        }else if(!et_arrivaltime.getText().toString().equals("") && !et_capacity.getText().toString().equals("")){
+                                            if(matchTimeFormat(et_arrivaltime.getText().toString())&& matchIntegerFormat(et_capacity.getText().toString())  ){
+                                                time = et_arrivaltime.getText().toString();
+                                                capacity = Integer.parseInt(et_capacity.getText().toString());
+                                                Thread thread = new Thread(new Runnable() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        filtered.clear();
-                                                        list.clear();
-                                                        temp.clear();
-                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                                            Driver dr = ds.getValue(Driver.class);
-                                                            String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
-                                                            new GeoTask(MapsActivity.this).execute(url);
-                                                            final Handler handler = new Handler(Looper.getMainLooper());
-                                                            list.add(dr);
-
-                                                            Log.d("hahaha", "sdasldwthqehqthqehhqqtheqhh" + list.size());
-                                                        }
-
-                                                        final Handler handler = new Handler(Looper.getMainLooper());
-                                                        handler.postDelayed(new Runnable() {
+                                                    public void run() {
+                                                        databaseReference.addValueEventListener(new ValueEventListener() {
                                                             @Override
-                                                            public void run() {
-                                                                pd.dismiss();
-                                                                for (int i = 0; i < list.size(); i++) {
-                                                                    try {
-                                                                        String[] st = nowTime.split(":");
-                                                                        if (list.get(i).getCapacity() >= capacity && list.get(i).getStatus().equals("Available")) {
-                                                                            Log.d("sahigvaoivbiavb0w9ugr", "sdasld" + temp.get(i).getCheck());
-                                                                            if (temp.get(i).getCheck() == true) {
-                                                                                filtered.add(list.get(i));
-                                                                                filtered.get(filtered.size() - 1).setArrivedTime(timeFormatter(st[0] + ":" + String.valueOf(temp.get(i).getTime() + Integer.parseInt(st[1])))); //TODO : add with the current time
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                filtered.clear();
+                                                                list.clear();
+                                                                temp.clear();
+                                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                                    Driver dr = ds.getValue(Driver.class);
+                                                                    String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
+                                                                    new GeoTask(MapsActivity.this).execute(url);
+                                                                    final Handler handler = new Handler(Looper.getMainLooper());
+                                                                    list.add(dr);
+
+                                                                }
+
+                                                                final Handler handler = new Handler(Looper.getMainLooper());
+                                                                handler.postDelayed(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        pd.dismiss();
+                                                                        for (int i = 0; i < list.size(); i++) {
+                                                                            try {
+                                                                                String[] st = nowTime.split(":");
+                                                                                if (list.get(i).getCapacity() >= capacity && list.get(i).getStatus().equals("Available")) {
+                                                                                    Log.d("sahigvaoivbiavb0w9ugr", "sdasld" + temp.get(i).getCheck());
+                                                                                    if (temp.get(i).getCheck() == true) {
+                                                                                        filtered.add(list.get(i));
+                                                                                        filtered.get(filtered.size() - 1).setArrivedTime(timeFormatter(st[0] + ":" + String.valueOf(temp.get(i).getTime() + Integer.parseInt(st[1])))); //TODO : add with the current time
+                                                                                    }
+                                                                                }
+                                                                            } catch (IndexOutOfBoundsException e) {
+                                                                                Toast.makeText(MapsActivity.this, "Internet Connection weak, Please connect again", Toast.LENGTH_SHORT).show();
+
                                                                             }
                                                                         }
-                                                                    } catch (IndexOutOfBoundsException e) {
-                                                                        Toast.makeText(MapsActivity.this, "Internet Connection weak, Please connect again", Toast.LENGTH_SHORT).show();
-
+                                                                        driverAdapter.notifyDataSetChanged();
                                                                     }
-                                                                }
-                                                                driverAdapter.notifyDataSetChanged();
-                                                                Log.d("hahaha", "sdasld" + filtered.size());
+                                                                }, 2500);
                                                             }
-                                                        }, 2500);
-                                                    }
 
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
 
                                                     }
                                                 });
+                                                thread.start();
+                                                myDialog.show();
+                                                pd.show();
 
+                                            }else{
+                                                Toast.makeText(MapsActivity.this, "Please enter according to the format", Toast.LENGTH_SHORT).show();
                                             }
-                                        });
-                                        thread.start();
+
+                                        }
+                                    } catch (NumberFormatException e) {
+                                        Toast.makeText(MapsActivity.this, "Please enter in valid form ", Toast.LENGTH_SHORT).show();
+                                    } catch (ArrayIndexOutOfBoundsException a) {
+                                        Toast.makeText(MapsActivity.this, "Please enter time in valid format", Toast.LENGTH_SHORT).show();
                                     }
-                                }catch(NumberFormatException e){
-                                    Toast.makeText(MapsActivity.this, "Please enter in valid form ", Toast.LENGTH_SHORT).show();
-                                }catch (ArrayIndexOutOfBoundsException a){
-                                    Toast.makeText(MapsActivity.this, "Please enter time in valid format", Toast.LENGTH_SHORT).show();
-                                }
 
 
-//                                databaseReference.addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                        filtered.clear();
-//                                        list.clear();
-//                                        temp.clear();
-//                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                                            Driver dr = ds.getValue(Driver.class);
-//                                            String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
-//                                            new GeoTask(MapsActivity.this).execute(url);
-//                                            final Handler handler = new Handler(Looper.getMainLooper());
-//                                            list.add(dr);
-//                                            Log.d("hahaha", "sdasldwthqehqthqehhqqtheqhh" + list.size());
-//                                        }
-//
-//                                        final Handler handler = new Handler(Looper.getMainLooper());
-//                                        handler.postDelayed(new Runnable() {
-//                                            @Override
-//                                            public void run() {
-//                                                for (int i = 0; i < list.size(); i++) {
-//                                                    try {
-//                                                        String[] st = nowTime.split(":");
-//                                                        if (list.get(i).getCapacity() >= capacity && list.get(i).getStatus().equals("Available")) {
-//                                                            Log.d("sahigvaoivbiavb0w9ugr", "sdasld" + temp.get(i).getCheck());
-//                                                            if (temp.get(i).getCheck() == true) {
-//                                                                filtered.add(list.get(i));
-//                                                                filtered.get(filtered.size() - 1).setArrivedTime(timeFormatter(st[0] + ":" + String.valueOf(temp.get(i).getTime() + Integer.parseInt(st[1])))); //TODO : add with the current time
-//                                                            }
-//                                                        }
-//                                                    } catch (IndexOutOfBoundsException e) {
-//                                                        Toast.makeText(MapsActivity.this, "Internet Connection weak, Please connect again", Toast.LENGTH_SHORT).show();
-//
-//                                                    }
-//                                                }
-//                                                driverAdapter.notifyDataSetChanged();
-//                                                Log.d("hahaha", "sdasld" + filtered.size());
-//                                            }
-//                                        }, 2500);
-//                                    }
-//
-//                                    @Override
-//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                    }
-//                                });
-                                Log.d("hahaha", "sdasld" + list.size());
+                                    //This is to confirm the driver and make the request
+                                    btn_confirmDriver.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            driverName = driverNameTxt.getText().toString();
+                                            databaseReference.child(driverName).child("currentLongLa").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    longLa = dataSnapshot.getValue(String.class);
+                                                    try {
+                                                        if (longLa.equals(null)) {
+                                                            Toast.makeText(MapsActivity.this, "Driver " + driverName + " not found, Please Try Again", Toast.LENGTH_SHORT).show();
 
-                                btn_confirmDriver.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        driverName = driverNameTxt.getText().toString();
+                                                        } else {
+                                                            String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + longLa + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
+                                                            new GetDuration(MapsActivity.this).execute(url);
+                                                            myDialog.dismiss();
+                                                            bottomSheetDialog.dismiss();
 
-                                        databaseReference.child(driverName).child("currentLongLa").addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                longLa = dataSnapshot.getValue(String.class);
-                                                try {
-                                                    if (longLa.equals(null)) {
+
+                                                            final Handler handler = new Handler(Looper.getMainLooper());
+                                                            handler.postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    request(customerName, driverName, driverToCustomer, customerToDestination);
+                                                                }
+                                                            }, 500);
+                                                            Toast.makeText(MapsActivity.this, " Request Successfully made ", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (NullPointerException e) {
                                                         Toast.makeText(MapsActivity.this, "Driver " + driverName + " not found, Please Try Again", Toast.LENGTH_SHORT).show();
-
-                                                    } else {
-                                                        String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + longLa + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
-                                                        new GetDuration(MapsActivity.this).execute(url);
-                                                        myDialog.dismiss();
-                                                        bottomSheetDialog.dismiss();
-                                                        btnComment.setVisibility(view.VISIBLE);
-
-                                                        final Handler handler = new Handler(Looper.getMainLooper());
-                                                        handler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                request(customerName, driverName, driverToCustomer, customerToDestination);
-                                                            }
-                                                        }, 500);
-                                                        Toast.makeText(MapsActivity.this, " Request Successfully made ", Toast.LENGTH_SHORT).show();
                                                     }
-                                                } catch (NullPointerException e) {
-                                                    Toast.makeText(MapsActivity.this, "Driver " + driverName + " not found, Please Try Again", Toast.LENGTH_SHORT).show();
+
                                                 }
 
-                                            }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
+                                                }
+                                            });
 
 
-                                    }
-                                });
-
-                                myDialog.show();
-                                pd.show();
-
-                                TextView TxtClose= myDialog.findViewById(R.id.txtclose);
-                                TxtClose.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        myDialog.dismiss();
-                                    }
-                                });
+                                        }
+                                    });
 
 
 
-                            }
-                        });
-                        bottomSheetDialog.show();
-                    }
-                });
+                                    TextView TxtClose = myDialog.findViewById(R.id.txtclose);
+                                    TxtClose.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            myDialog.dismiss();
+                                        }
+                                    });
+
+
+                                }
+                            });
+                            bottomSheetDialog.show();
+                        }
+
 
                 break;
 
+                //This is to set the function to show the rating dialog
             case R.id.btnComment:
 
-                btnComment = findViewById(R.id.btnComment);
-                btnComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+
                         commentDialog = new Dialog(MapsActivity.this);
                         commentDialog.setContentView(R.layout.comment_dialog);
                         TextView driverNameView = commentDialog.findViewById(R.id.driverNameView);
@@ -647,10 +653,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         submit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                if (!rating.getText().toString().equals("")) {
+                                if (!rating.getText().toString().equals("")&&matchRatingFormat(rating.getText().toString())) {
                                     setRating(driverName, Double.parseDouble(rating.getText().toString()));
-                                    Toast.makeText(MapsActivity.this, "Rate " + driverName + "Successfully. Thank You", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MapsActivity.this, "Rate driver " + driverName + " successfully. Thank You", Toast.LENGTH_SHORT).show();
                                     commentDialog.dismiss();
+                                    btnComment.setVisibility(View.INVISIBLE);
+                                }else{
+                                    Toast.makeText(MapsActivity.this, "Please enter a valid rating", Toast.LENGTH_SHORT).show();
+
                                 }
 
                             }
@@ -662,18 +672,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         });
                         commentDialog.show();
-                    }
-                });
+
 
 
                 break;
 
+            case R.id.logoutBtn:
+
+
+                        logoutDialog = new Dialog(MapsActivity.this);
+                        logoutDialog.setContentView(R.layout.logout_dialog);
+                        Button yesBtn= logoutDialog.findViewById(R.id.yesBtn);
+                        Button noBtn= logoutDialog.findViewById(R.id.noBtn);
+                        logoutDialog.show();
+
+                        yesBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                setToFree(customerName);
+                                finish();
+                                onBackPressed();
+                            }
+                        });
+
+                        noBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                logoutDialog.dismiss();
+                            }
+                        });
+
+
+                break;
+
+
+
         }
     }
 
-    //TODO :come with better
+
+
+    //This method is override the serDriver method od the GeoTask class to get the suitable driver with the list
     @Override
-    public void setDouble(String result) {
+    public void setDriver(String result) {
         String res[] = result.split(",");
         int min = (int) (Double.parseDouble(res[0]) / 60);
         int totalTime = min + customerToDestination;
@@ -687,6 +728,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d("hahaha", "sdasld" + time);
     }
 
+    //This method is override the getDuration method od the getDuration class to get the duration from driver to customer
     @Override
     public void getDuration(String result) {
         String res[] = result.split(",");
@@ -695,14 +737,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private String getDirectionsUrl() {
-        StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        googleDirectionsUrl.append("origin=" + latitude + "," + longitude);
-        googleDirectionsUrl.append(("&destination=" + end_latitude + "," + end_longitude));
-        googleDirectionsUrl.append("&key=" + "AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI");
-
-        return googleDirectionsUrl.toString();
-    }
 
     private String getDirectionsUrl2() {
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
@@ -722,20 +756,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return googleDirectionsUrl.toString();
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
-        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlaceUrl.append("location=" + latitude + "," + longitude);
-        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type=" + nearbyPlace);
-        googlePlaceUrl.append("&sensor=true");
-        googlePlaceUrl.append("&key=" + getString(R.string.MAPS_API_KEY));
 
-        Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
-
-        return googlePlaceUrl.toString();
-    }
-
+    //This method is to get tje location request if the user
     @SuppressLint("MissingPermission")
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -752,6 +775,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    //This is to check whether the user give the permission to access his location
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -767,6 +791,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    //This all is to override the method in the GoogleMap
     @Override
     public void onConnectionSuspended(int i) {
     }
@@ -775,6 +800,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+
+    //Set the market to draggable
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         marker.setDraggable(true);
@@ -786,6 +813,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    //Read the latitude and longitude of the marker
     @Override
     public void onMarkerDragEnd(@NonNull Marker marker) {
         end_latitude = marker.getPosition().latitude;
@@ -798,6 +826,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    //This method is to get the location of the destination
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         etSource = findViewById(R.id.TF_location);
@@ -813,6 +842,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //All the method
+
+    //This method is to get all the 4-pax driver
     public void getAll4Location() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -835,7 +866,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
-
+    //This method is to get all the 6-pax driver
     public void getAll6Location() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -859,6 +890,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    //This method is to rate the driver
     public void setRating(String driverName, Double rate) {
         databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -875,6 +907,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
+    //this method is to set the rating in the database after the user rate
     public void set(int numberOfRating, double rating, String driverName, double increasedRating) {
         double result = (rating * numberOfRating + increasedRating) / (numberOfRating + 1);
         databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -892,6 +926,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+    //This method is to round the value into desired decimal places
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -901,25 +937,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return (double) tmp / factor;
     }
 
+
+    //This method is to make the request for the driver
     public void request(String userName, String driverName, int driverToCustomer, int customerToDestination) {
         GetDirectionsData getDirectionsData = new GetDirectionsData();
         mMap.clear();
-
-//        Thread thread= new Thread(new Runnable() {
-//            @Override
-//            public void run() {
 
         TextView statusTxt= findViewById(R.id.statusTxt);
         statusTxt.setText("Your driver is on his way to pick you ");
         statusTxt.setVisibility(View.VISIBLE);
         String[] st = nowTime.split(":");
-        setCusAndArr(driverName,customerName,timeFormatter(st[0] + ":" + String.valueOf(driverToCustomer+customerToDestination + Integer.parseInt(st[1]))));
+        setCusAndArr(driverName,userName,timeFormatter(st[0] + ":" + String.valueOf(driverToCustomer+customerToDestination + Integer.parseInt(st[1]))));
         setToWaiting(userName);
-//        setToUnavailable(driverName);
-        setCapacity(customerName,capacity);
-        setDestinationLongLa(customerName,endingLaLong);
-        setStartingLongLa(customerName,latitude + "," + longitude);
-        cusArrivedTime(customerName,timeFormatter(st[0] + ":" + String.valueOf(driverToCustomer+customerToDestination + Integer.parseInt(st[1]))));
+        setCapacity(userName,capacity);
+        setDestinationLongLa(userName,endingLaLong);
+        setStartingLongLa(userName,latitude + "," + longitude);
+        cusArrivedTime(userName,timeFormatter(st[0] + ":" + String.valueOf(driverToCustomer+customerToDestination + Integer.parseInt(st[1]))));
 
 
         Object dataTransfer[] = new Object[3];
@@ -947,13 +980,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }, 300);
 
 
-        //TODO: set the text view become "Your driver is on the way"
+
         final Handler handler1 = new Handler(Looper.getMainLooper());
         handler1.postDelayed(new Runnable() {
             @Override
             public void run() {
                 GetDirectionsData getDirectionsData2 = new GetDirectionsData();
-                setToPickedUp(userName);// TODO: set the text view
+                setToPickedUp(userName);
                 mMap.clear();
                 LatLng latLng = new LatLng(addressList.get(0).getLatitude(), addressList.get(0).getLongitude());
                 Object dataTransfer2 []= new Object[3];
@@ -988,11 +1021,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void run() {
                 statusTxt.setText("Reached, have a good day.");
-                setToReached(userName);// TODO: set the text view
-//                setToAvailable(driverName);
-//                setDriverLocation(driverName);
+                setToReached(userName);
                 reSet(driverName);
                 setToFree(customerName);
+                btnComment.setVisibility(View.VISIBLE);
             }
         }, (driverToCustomer + customerToDestination) * 1000);
 
@@ -1002,15 +1034,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run() {
                 statusTxt.setVisibility(View.INVISIBLE);
                 mMap.clear();
+
             }
         }, (driverToCustomer + customerToDestination+2) * 1000);
-//    }
-//
-//        });
-//        thread.start();
 }
 
 
+//This method is to set the customer arrival time
 public void cusArrivedTime(String customerName,String arrivedTime){
     customerDatabaseReference.child(customerName).addListenerForSingleValueEvent(new ValueEventListener() {
         @Override
@@ -1024,6 +1054,9 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         }
     });
 }
+
+
+//this method is to set the capacity of the customer
     public void setCapacity(String customerName,int capacity){
         customerDatabaseReference.child(customerName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1038,6 +1071,8 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+
+    //This method is to set the destination location for the customer
     public void setDestinationLongLa(String customerName,String destination){
         customerDatabaseReference.child(customerName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1052,6 +1087,8 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+
+    //This method is to set the starting location of the customer
     public void setStartingLongLa(String customerName,String starting){
         customerDatabaseReference.child(customerName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1066,7 +1103,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
-
+//this method is to set the status of customer to pending
     public void setToPending(String userName){
         customerDatabaseReference.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1081,6 +1118,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+    //this method is to set the status of customer to waiting
     public void setToWaiting(String userName){
         customerDatabaseReference.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1094,7 +1132,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
             }
         });
     }
-
+    //this method is to set the status of customer to picked up
     public void setToPickedUp(String userName){
         customerDatabaseReference.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1109,6 +1147,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+    //this method is to set the status of customer to reached
     public void setToReached(String userName){
         customerDatabaseReference.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1123,6 +1162,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+    //this method is to set the status of customer to free which mean to action his do
     public void setToFree(String userName){
         customerDatabaseReference.child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1141,49 +1181,9 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
-    public void setToUnavailable(String driverName){
-        databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataSnapshot.getRef().child("status").setValue("Unavailable");
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MapsActivity.this, "Please reenter the name  ", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
-    public void setToAvailable(String driverName){
-        databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataSnapshot.getRef().child("status").setValue("Available");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MapsActivity.this, "Please reenter the name  ", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    public void setDriverLocation(String driverName){
-        databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String LongLa= endingLaLong; //TODO: put the user longla in here
-                dataSnapshot.getRef().child("currentLongLa").setValue(formatLongLa(LongLa));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MapsActivity.this, "Please reenter the name  ", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
+    //this method is to set the arrived time and the status , and the customer of the driver
     public void setCusAndArr(String driverName, String customerName,String arrivedTime){
         databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1200,6 +1200,8 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         });
     }
 
+
+    //This method  is to reset the driver after the journey have ended
     public void reSet(String driverName){
         databaseReference.child(driverName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1220,7 +1222,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
     }
 
 
-
+//This method is to calculate the time different between the user input and current time
     public  int  timeDif(String  start,String end){
         String[] split1 = start.split(":");
         String[] split2 = end.split(":");
@@ -1245,10 +1247,9 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         return temp[0]*60 +temp[1];
     }
 
+
+    //this method is to format the time format
     public static String timeFormatter(String time) {
-//        String hour=String.valueOf(Integer.parseInt(time)/100);
-//        String minute=String.valueOf(Integer.parseInt(time)%100);
-//        String temp3=hour+":"+minute;
         String[] split1 = time.split(":");
         int[] time1 = new int[2];
         time1[0] += Integer.parseInt(split1[0]);
@@ -1277,6 +1278,7 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         return time1[0]+":"+time1[1];
     }
 
+    //this is to format the longitude and latitude to 6 decimal place
     public String formatLongLa(String LongLa){
         String temp[]=LongLa.split(",");
         double scale = Math.pow(10, 6);
@@ -1285,52 +1287,36 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         return str1+","+str2;
     }
 
-    public  void displayDriver(){
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                filtered.clear();
-                list.clear();
-                temp.clear();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Driver dr = ds.getValue(Driver.class);
-                    String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
-                    new GeoTask(MapsActivity.this).execute(url);
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    list.add(dr);
-                    Log.d("hahaha", "sdasldwthqehqthqehhqqtheqhh" + list.size());
-                }
 
-                final Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < list.size(); i++) {
-                            try {
-                                String[] st = nowTime.split(":");
-                                if (list.get(i).getCapacity() >= capacity && list.get(i).getStatus().equals("Available")) {
-                                    Log.d("sahigvaoivbiavb0w9ugr", "sdasld" + temp.get(i).getCheck());
-                                    if (temp.get(i).getCheck() == true) {
-                                        filtered.add(list.get(i));
-                                        filtered.get(filtered.size() - 1).setArrivedTime(timeFormatter(st[0] + ":" + String.valueOf(temp.get(i).getTime() + Integer.parseInt(st[1])))); //TODO : add with the current time
-                                    }
-                                }
-                            } catch (IndexOutOfBoundsException e) {
-                                Toast.makeText(MapsActivity.this, "Internet Connection weak, Please connect again", Toast.LENGTH_SHORT).show();
+    //This  method is to calculate the price of whole journey
+    public double getPrice(int capacity, int totalTime){
+        if(capacity<=4){
+            return totalTime*4*0.30;
+        }else{
+            return totalTime*6*0.30;
+        }
+    }
 
-                            }
-                        }
-//                        driverAdapter.notifyDataSetChanged();
-                        Log.d("hahaha", "sdasld" + filtered.size());
-                    }
-                }, 2500);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+    //This method is to check whether the user input time match the format
+    public boolean matchTimeFormat(String str){
+        Pattern p= Pattern.compile("[0-2][0-9]:[0-5][0-9]");
+        Matcher m= p.matcher(str);
+        return m.matches();
+    }
 
-            }
-        });
+    //This method is to check whether the user capacity match the format
+    public boolean matchIntegerFormat(String str){
+        Pattern p= Pattern.compile("[1-6]");
+        Matcher m= p.matcher(str);
+        return m.matches();
+    }
+
+    //This method is to check whether the user rating match the format
+    public boolean matchRatingFormat(String str){
+        Pattern p= Pattern.compile("[0-5].[0-9]");
+        Matcher m= p.matcher(str);
+        return m.matches();
     }
 
 

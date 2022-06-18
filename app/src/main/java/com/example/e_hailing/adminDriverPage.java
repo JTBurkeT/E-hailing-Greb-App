@@ -25,6 +25,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/*
+This class is the controller for adminDriverPage which is to show the details of the driver
+We are using firebase to fetch the real time data of all the driver and show it in the table
+This class also define the button in the page which perform adding or removing the admin
+ */
 
 public class adminDriverPage extends AppCompatActivity {
     private FloatingActionButton addBtn , removeBtn;
@@ -63,7 +71,7 @@ public class adminDriverPage extends AppCompatActivity {
 
 
 
-
+        // This is to set the addBtn with the function
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +91,7 @@ public class adminDriverPage extends AppCompatActivity {
                 layout.addView(capacity);
 
                 final EditText currentDestination = new EditText(context);
-                currentDestination.setHint("Current Longitude Latitude");
+                currentDestination.setHint("Current Location (eg: 3.1160,101.7526) ");
 
                 layout.addView(currentDestination); // Another add method
 
@@ -96,14 +104,21 @@ public class adminDriverPage extends AppCompatActivity {
                 dialog.setView(layout); // Again this is a set method, not add
                 AlertDialog alert = dialog.create();
 
+
+                //TODO: test  here
                 submitBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(!name.getText().toString().equals("")&&!capacity.getText().toString().equals("")&&!capacity.getText().toString().equals("")){
-                            Driver driver= new Driver(name.getText().toString(),"Available",currentDestination.getText().toString(),"",Integer.parseInt(capacity.getText().toString()),0);
-                            databaseReference.child(name.getText().toString()).setValue(driver);
+                        if(!name.getText().toString().equals("")&&!currentDestination.getText().toString().equals("")&&!capacity.getText().toString().equals("")){
+                            if(matchLaLongFormat(currentDestination.getText().toString())&&matchIntegerFormat(capacity.getText().toString())){
+                                Driver driver= new Driver(name.getText().toString(),"Available",currentDestination.getText().toString(),"",Integer.parseInt(capacity.getText().toString()),0);
+                                databaseReference.child(name.getText().toString()).setValue(driver);
 
-                            Toast.makeText(adminDriverPage.this, "Driver "+name.getText().toString()+ " added.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(adminDriverPage.this, "Driver "+name.getText().toString()+ " added.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(adminDriverPage.this, "Please make sure the input follow the format", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                         else{
                             Toast.makeText(context, "Please make sure all the field filled correctly", Toast.LENGTH_SHORT).show();
@@ -112,28 +127,12 @@ public class adminDriverPage extends AppCompatActivity {
                 });
 
 
-//                submitBtn.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if(!name.getText().toString().equals("")&&!capacity.getText().toString().equals("")&&!capacity.getText().toString().equals("")){
-//                            if(DB.addDriver(name.getText().toString(),Integer.parseInt(capacity.getText().toString()),currentDestination.getText().toString())){
-//                                Toast.makeText(context, "Driver "+name.getText().toString()+ " added.", Toast.LENGTH_SHORT).show();
-//                                refresh();
-//                                displayInTable();
-//                            }else{
-//                                Toast.makeText(context, "Driver "+name.getText().toString()+ " already exists.", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                        else{
-//                            Toast.makeText(context, "Please make sure all the field is filled", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
                 alert.show();
             }
         });
 
+
+        //This is to set up the removeBtn to perform removing the driver
         removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -171,6 +170,7 @@ public class adminDriverPage extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot snapshot) {
                                     if (snapshot.hasChild(name.getText().toString())) {
                                         databaseReference.child(name.getText().toString()).removeValue();
+                                        name.setText("");
                                         Toast.makeText(context, "Driver "+name.getText().toString()+" removed.", Toast.LENGTH_SHORT).show();
                                     }else{
                                         Toast.makeText(context, "Driver "+name.getText().toString()+" invalid.", Toast.LENGTH_SHORT).show();
@@ -190,28 +190,6 @@ public class adminDriverPage extends AppCompatActivity {
                     }
                 });
 
-
-//                remove.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if(!name.getText().toString().equals("")){
-//                            if(DB.deleteDriver(name.getText().toString())){
-//                                Toast.makeText(context, "Driver "+name.getText().toString()+ " removed.", Toast.LENGTH_SHORT).show();
-//                                if(DB.checkDb()){
-//                                    refresh();
-//                                    displayInTable();
-//                                }
-//
-//                            }else{
-//                                Toast.makeText(context, "Driver "+name.getText().toString()+" invalid.", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                        else{
-//                            Toast.makeText(context, "Please make sure all the Driver Name is filled", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-
                 alert.show();
 
 
@@ -221,6 +199,8 @@ public class adminDriverPage extends AppCompatActivity {
 
 
     }
+
+    //This method is to get all the driver from the database and fetch it into the table
     public void getAllDriver(){
         DriverList<Driver> res=new DriverList();
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -238,7 +218,6 @@ public class adminDriverPage extends AppCompatActivity {
                     TextView rating = tableRow.findViewById(R.id.rating);
                     TextView numberOfRating  = tableRow.findViewById(R.id.numberOfRating);
 
-                    Log.d("hjhiuhhiuguigh", "hhhhhhhhhhhhhhhhhhhh ");
                     Driver dr=ds.getValue(Driver.class);
 
                     name.setText(dr.getName());
@@ -265,9 +244,23 @@ public class adminDriverPage extends AppCompatActivity {
 
 
 
-
+    //this method is to clear all the element inside the table to prevent the duplicate of the data
     public void refresh(){
         tableLayout.removeAllViews();
+    }
+
+    //This method is to check whether the user capacity match the format
+    public boolean matchIntegerFormat(String str){
+        Pattern p= Pattern.compile("[1-6]");
+        Matcher m= p.matcher(str);
+        return m.matches();
+    }
+
+    //This method is to check whether the user input longitude latitude match the format
+    public boolean matchLaLongFormat(String str){
+        Pattern p= Pattern.compile("[0-9]+\\.+[0-9],[0-9]+\\.+[0-9]");
+        Matcher m= p.matcher(str);
+        return m.matches();
     }
 
 

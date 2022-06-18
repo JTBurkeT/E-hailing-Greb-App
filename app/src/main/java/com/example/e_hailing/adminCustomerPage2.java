@@ -15,6 +15,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/*
+This class is the controller for adminCustomerPage which is to show the card view for each customer with their details
+ */
 public class adminCustomerPage2 extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -22,6 +25,9 @@ public class adminCustomerPage2 extends AppCompatActivity {
     RecyclerView recyclerView;
     customerAdapter customerAdapter;
 
+/*
+Here we are using firebase to get the realtime data about our customer and add it inside the list which adapt to the recycler view
+ */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

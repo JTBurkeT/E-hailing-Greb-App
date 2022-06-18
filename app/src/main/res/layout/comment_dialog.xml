@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
-    android:layout_height="250dp"
+    android:layout_width="350dp"
+    android:layout_height="350dp"
     android:layout_gravity="center"
-    android:background="#F3C5C5"
-    android:backgroundTint="#E8ACAC"
+    android:background="#7A5353"
+    android:backgroundTint="#FBF08F"
     android:orientation="vertical"
     android:padding="5dp"
     android:textAlignment="center">
 
     <TextView
         android:id="@+id/btnCloseDialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="210dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginLeft="290dp"
         android:background="@drawable/round_edittext"
+        android:gravity="center"
         android:text="X"
         android:textAlignment="center"
         android:textSize="16sp" />
@@ -22,18 +23,21 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="Give a review to your Driver"
+        android:layout_marginTop="10dp"
+        android:text="Give a review to your driver"
         android:textAlignment="center"
-        android:textSize="18sp" />
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/driverNameView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="20dp"
         android:text="Driver Name: "
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/ratingTxt"
@@ -41,15 +45,20 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:hint="Enter value 0-5"
-        android:textSize="16sp" />
+        android:hint="Enter value 0.0 - 5.0"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnSubmit"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="submit" />
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="#3F51B5"
+        android:gravity="center|center_horizontal"
+        android:text="submit"
+        android:textColor="#F8F7F7" />
 
 
 </LinearLayout>

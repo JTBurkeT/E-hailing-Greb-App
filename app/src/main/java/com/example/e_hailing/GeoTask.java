@@ -18,8 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-/*The instance of this class is called by "MainActivty",to get the time taken reach the destination from Google Distance Matrix API in background.
-  This class contains interface "Geo" to call the function setDouble(String) defined in "MainActivity.class" to display the result.*/
+/*The instance of this class is called by "MapsActivty",to get the time taken reach the destination from Google Distance Matrix API in background.
+  This class contains interface "Geo" to call the function setDriver(String) defined in "MapsActivity.class" to add the time into the list.*/
 public class GeoTask extends AsyncTask<String, Void, String> {
 //    ProgressDialog pd;
     Context mContext;
@@ -30,28 +30,27 @@ public class GeoTask extends AsyncTask<String, Void, String> {
         this.mContext = mContext;
         geo1= (Geo) mContext;
     }
-    //This function is executed before before "doInBackground(String...params)" is executed to dispaly the progress dialog
+
+    //This function is executed before before "doInBackground(String...params)" is executed
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-//        pd=new ProgressDialog(mContext);
-//        pd.setMessage("Loading");
-//        pd.setCancelable(false);
-//        pd.show();
+
     }
-    //This function is executed after the execution of "doInBackground(String...params)" to dismiss the dispalyed progress dialog and call "setDouble(Double)" defined in "MainActivity.java"
+    //This function is executed after the execution of "doInBackground(String...params)" to  call "setDriver(Double)" defined in "MainActivity.java"
     @Override
     protected void onPostExecute(String aDouble) {
         super.onPostExecute(aDouble);
         if(aDouble!=null)
         {
-            geo1.setDouble(aDouble);
-//            pd.dismiss();
+            geo1.setDriver(aDouble);
         }
         else
             Toast.makeText(mContext, "Error4!Please Try Again wiht proper values", Toast.LENGTH_SHORT).show();
     }
 
+
+    //This is  to parse the data  from the JSON file and return it as  a string , this override the doInBackground method
     @Override
     protected String doInBackground(String... params) {
         try {
@@ -98,8 +97,10 @@ public class GeoTask extends AsyncTask<String, Void, String> {
 
         return null;
     }
+
+    //the interface that the class implement
     interface Geo{
-        public void setDouble(String min);
+        public void setDriver(String min);
     }
 
 }

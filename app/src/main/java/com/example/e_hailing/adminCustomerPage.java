@@ -1,14 +1,9 @@
 package com.example.e_hailing;
 
-import static android.content.ContentValues.TAG;
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TableLayout;
@@ -22,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class adminCustomerPage extends AppCompatActivity {
-    private customerDataBase Db;
     private TableLayout tableLayout;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;

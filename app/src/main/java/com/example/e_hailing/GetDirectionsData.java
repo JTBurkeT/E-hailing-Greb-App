@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+/*
+This class is to get the direction data and display it in the map to show the direction between the origin an destination
+ */
 public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
     String googleDirectionsData;
@@ -26,6 +29,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     LatLng latLng;
     public static int borrowDuration;
 
+    //The method that override the method in the asyncTask
     @Override
     protected String doInBackground(Object... objects) {
         mMap = (GoogleMap) objects[0];
@@ -41,6 +45,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         return googleDirectionsData;
     }
 
+    //The method that override the method in the onPostExecute
     @Override
     protected void onPostExecute(String s){
 
@@ -76,6 +81,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
     }
 
 
+    //This method is to display the direction on the map and set it width and color
     public void displayDirection(String[] directionsList) {
         int count = directionsList.length;
         for (int i = 0; i<count; i++) {

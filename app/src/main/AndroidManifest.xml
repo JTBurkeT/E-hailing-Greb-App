@@ -10,9 +10,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/splash_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/splash_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EHailing" >
 
@@ -51,13 +51,7 @@
             android:name=".AdminMainPage"
             android:exported="false" />
         <activity
-            android:name=".CustomerPage"
-            android:exported="false" />
-        <activity
             android:name=".RegisterPage"
-            android:exported="false" />
-        <activity
-            android:name=".AdminPage"
             android:exported="false" />
         <activity
             android:name=".AdminLoginPage"

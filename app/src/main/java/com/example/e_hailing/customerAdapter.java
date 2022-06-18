@@ -11,17 +11,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/*
+This class is to perform as the adapter to adapt the driver object from the list and put it inside the recycler view
+ */
 public class customerAdapter extends RecyclerView.Adapter<customerAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<CustomerObject> list;
-// TODO : changes
 
+    //The constructor of the customerAdapter
     public customerAdapter(Context context, ArrayList<CustomerObject> list) {
         this.context = context;
         this.list = list;
     }
 
+    //Set the viewHolder which is the card view
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,6 +33,8 @@ public class customerAdapter extends RecyclerView.Adapter<customerAdapter.MyView
         return  new MyViewHolder(v);
     }
 
+
+    //Bind the data of the customer object with the customer card view
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
@@ -43,11 +49,14 @@ public class customerAdapter extends RecyclerView.Adapter<customerAdapter.MyView
 
     }
 
+    //to get the size of the list
     @Override
     public int getItemCount() {
         return list.size();
     }
 
+
+    // use to initialize the widget in the customer card view
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView Name, capacity, arrivalTime,status,starting,ending;

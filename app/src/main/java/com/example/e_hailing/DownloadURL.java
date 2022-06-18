@@ -10,8 +10,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/*
+This class is to prepare the URL and makes the URL which is required to get the data from the google matrix api and and the google direction api
+ */
 public class DownloadURL {
 
+
+//This method is to get the URL request information and return it as the String
     public String readUrl(String myUrl) throws IOException
     {
         String data = "";

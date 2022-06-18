@@ -49,14 +49,35 @@
                     android:layout_width="342dp"
                     android:layout_height="289dp" />
 
-                <EditText
-                    android:id="@+id/driverNameTxt"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/buttonstyle"
-                    android:hint="Please select a driver" />
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/driverNameTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/buttonstyle"
+                        android:hint="Please select a driver"
+                        android:textColor="#FBFBFB"
+                        android:textColorHint="#F6F3F3" />
+
+                    <TextView
+                        android:id="@+id/priceTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:text="Price: "
+                        android:textColor="#FAF4F4"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
 
                 <Button
@@ -71,13 +92,10 @@
                     android:textColor="@color/white" />
 
 
+
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
-        <!--        </LinearLayout>-->
-
-
-
     </LinearLayout>
 
 

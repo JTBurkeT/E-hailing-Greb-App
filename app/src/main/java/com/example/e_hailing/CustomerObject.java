@@ -1,9 +1,12 @@
 package com.example.e_hailing;
-
+/*
+This class is to create the object of the customer
+ */
 public class CustomerObject {
      private String userName, email,password,status,expectedArrivalTime,StartingLongLa,DestinationLongLa;
      private int capacity;
 
+     //The constructor of the customerObject
     public CustomerObject() {
     }
 
@@ -17,6 +20,8 @@ public class CustomerObject {
         DestinationLongLa = "";
         this.capacity =0;
     }
+
+    //All the getter and setter of the customerObject
 
     public String getUserName() {
         return userName;

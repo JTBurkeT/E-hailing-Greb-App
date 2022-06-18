@@ -31,22 +31,22 @@
         android:background="@drawable/round_edittext"/>
 
     <EditText
+        android:id="@+id/et_arrivaltime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/et_arrivaltime"
-        android:hint="Enter Expected Arrival Time"
-        android:padding="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/round_edittext"/>
+        android:background="@drawable/round_edittext"
+        android:hint="Expected Arrival Time (eg: 20:45)"
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/et_capacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/et_capacity"
-        android:hint="Enter Capacity"
-        android:padding="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/round_edittext"/>
+        android:background="@drawable/round_edittext"
+        android:hint="Capacity (max: 6)"
+        android:padding="10dp" />
 
     <Button
         android:layout_width="wrap_content"
