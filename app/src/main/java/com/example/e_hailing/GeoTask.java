@@ -46,7 +46,7 @@ public class GeoTask extends AsyncTask<String, Void, String> {
             geo1.setDriver(aDouble);
         }
         else
-            Toast.makeText(mContext, "Error4!Please Try Again wiht proper values", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Error4! Please Try Again", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -88,11 +88,11 @@ public class GeoTask extends AsyncTask<String, Void, String> {
 
             }
         } catch (MalformedURLException e) {
-            Log.d("error", "error1");
+            Log.d("error", "Mal formed URL");
         } catch (IOException e) {
-            Log.d("error", "error2");
+            Log.d("error", "Exception occur");
         } catch (JSONException e) {
-            Log.d("error","error3");
+            Log.d("error","Api request failed");
         }
 
         return null;

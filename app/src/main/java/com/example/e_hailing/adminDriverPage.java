@@ -258,7 +258,7 @@ public class adminDriverPage extends AppCompatActivity {
 
     //This method is to check whether the user input longitude latitude match the format
     public boolean matchLaLongFormat(String str){
-        Pattern p= Pattern.compile("[0-9]+\\.+[0-9],[0-9]+\\.+[0-9]");
+        Pattern p= Pattern.compile("[0-9]+\\.[0-9]+,[0-9]+\\.[0-9]+");
         Matcher m= p.matcher(str);
         return m.matches();
     }

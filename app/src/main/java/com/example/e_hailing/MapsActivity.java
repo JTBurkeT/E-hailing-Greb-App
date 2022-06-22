@@ -121,7 +121,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     double latitude, longitude;
     double end_latitude, end_longitude;
     EditText etSource;
-    Button btshow, btnComment, logoutBtn;
+    Button btnComment;
+    Button logoutBtn;
+    Button searchBtn;
+    Button fourDriverBtn;
+    Button sixDriverBtn;
+    Button searchDriverBtn;
     Dialog myDialog, commentDialog, logoutDialog;
     List<Address> addressList;
     FirebaseDatabase firebaseDatabase;
@@ -142,6 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     EditText tf_location;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,6 +165,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filtered = new ArrayList<>();
         duration = new ArrayList<>();
         tf_location = findViewById(R.id.TF_location);
+        logoutBtn =findViewById(R.id.logoutBtn);
+        searchBtn=findViewById(R.id.B_search);
+        fourDriverBtn=findViewById(R.id.fourDriver);
+        sixDriverBtn=findViewById(R.id.sixDriver);
+        searchDriverBtn=findViewById(R.id.searchDriver);
 
 
 
@@ -543,6 +554,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                                                 }
                                                                             } catch (IndexOutOfBoundsException e) {
                                                                                 Toast.makeText(MapsActivity.this, "Internet Connection weak, Please connect again", Toast.LENGTH_SHORT).show();
+                                                                                break;
 
                                                                             }
                                                                         }
@@ -953,7 +965,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setDestinationLongLa(userName,endingLaLong);
         setStartingLongLa(userName,latitude + "," + longitude);
         cusArrivedTime(userName,timeFormatter(st[0] + ":" + String.valueOf(driverToCustomer+customerToDestination + Integer.parseInt(st[1]))));
-
+        setNonClick();
 
         Object dataTransfer[] = new Object[3];
         String url = getDirectionsUrl2();
@@ -1025,6 +1037,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 reSet(driverName);
                 setToFree(customerName);
                 btnComment.setVisibility(View.VISIBLE);
+                setClick();
             }
         }, (driverToCustomer + customerToDestination) * 1000);
 
@@ -1317,6 +1330,27 @@ public void cusArrivedTime(String customerName,String arrivedTime){
         Pattern p= Pattern.compile("[0-5].[0-9]");
         Matcher m= p.matcher(str);
         return m.matches();
+    }
+
+    //Let all the button non clickable
+    public void setNonClick(){
+        tf_location.setClickable(false);
+        logoutBtn.setClickable(false);
+        searchBtn.setClickable(false);
+        fourDriverBtn.setClickable(false);
+        sixDriverBtn.setClickable(false);
+        searchDriverBtn.setClickable(false);
+
+    }
+
+    public void setClick(){
+        tf_location.setClickable(true);
+        logoutBtn.setClickable(true);
+        searchBtn.setClickable(true);
+        fourDriverBtn.setClickable(true);
+        sixDriverBtn.setClickable(true);
+        searchDriverBtn.setClickable(true);
+
     }
 
 

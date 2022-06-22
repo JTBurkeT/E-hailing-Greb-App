@@ -37,6 +37,8 @@ try{
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }catch(NullPointerException e){
+
         }
 
         return googleDirectionsMap;
@@ -128,7 +130,9 @@ try{
         try {
             jsonObject = new JSONObject(jsonData);
             jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
-        } catch (JSONException e) {
+        } catch(NullPointerException e){
+
+        }catch (JSONException e) {
             e.printStackTrace();
         }
         return getDuration(jsonArray);

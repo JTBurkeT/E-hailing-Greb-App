@@ -90,7 +90,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="470dp"
+            android:layout_marginTop="465dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
@@ -101,7 +101,8 @@
                 android:text="TextView"
                 android:textAlignment="center"
                 android:textColor="#EF0A0A"
-                android:textSize="20sp"
+                android:textSize="25sp"
+                android:textStyle="bold"
                 android:visibility="invisible" />
         </LinearLayout>
 
@@ -125,14 +126,14 @@
 
             <Button
                 android:id="@+id/btnComment"
-                android:layout_width="wrap_content"
+                android:layout_width="198dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:background="@drawable/buttonstyle"
                 android:backgroundTint="#673AB7"
                 android:clickable="true"
                 android:onClick="onClick"
-                android:text="Rates Your Driver"
+                android:text="Rates Driver"
                 android:textColor="#F8F4F4"
                 android:visibility="invisible" />
 

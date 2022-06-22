@@ -12,15 +12,19 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.namespace.NamespaceContext;
 /*
 This class is the controller of the register page which user can create account in this page
  */
 public class RegisterPage extends AppCompatActivity {
-    EditText UserName, Password ,Email ,ConfirmPassword;
+    EditText UserName, Password ,ConfirmPassword;
     Button backBtn, registerBtn;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    public EditText Email;
 
 
     @Override
@@ -39,10 +43,11 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!Password.getText().toString().equals("")&& !UserName.getText().toString().equals("")&&!Email.getText().toString().equals("")&&!ConfirmPassword.getText().toString().equals("")){
-                    if(Password.getText().toString().length()>6){
+                    if(Password.getText().toString().length()>6&&matchEmailFormat(Email.getText().toString())){
                         if(Password.getText().toString().equals(ConfirmPassword.getText().toString())){
                             CustomerObject c= new CustomerObject(UserName.getText().toString(),Email.getText().toString(),Password.getText().toString());
                             databaseReference.child(UserName.getText().toString()).setValue(c);
+                            sendMail(UserName.getText().toString());
                             Toast.makeText(RegisterPage.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
                             finish();
                             Intent intent =new Intent(RegisterPage.this,MainActivity.class);
@@ -52,7 +57,7 @@ public class RegisterPage extends AppCompatActivity {
                             Toast.makeText(RegisterPage.this, "Please Make Sure the Password Inserted is Correct", Toast.LENGTH_SHORT).show();
                         }
                     }else{
-                        Toast.makeText(RegisterPage.this, "The Password must be longer than 6 character", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterPage.this, "Please make sure the input follow the format ", Toast.LENGTH_SHORT).show();
                     }
 
                 }else{
@@ -66,7 +71,9 @@ public class RegisterPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
-                onBackPressed();
+                Intent intent= new Intent(RegisterPage.this,MainActivity.class);
+                startActivity(intent);
+
             }
         });
 
@@ -81,6 +88,33 @@ public class RegisterPage extends AppCompatActivity {
 
         backBtn= findViewById(R.id.backBtn1);
         registerBtn=findViewById(R.id.registerBtn);
+    }
+
+    //This method is to check whether the user input match the gmail format
+    public boolean matchEmailFormat(String str){
+        Pattern p= Pattern.compile("[a-zA-Z0-9]+@gmail.com");
+        Matcher m= p.matcher(str);
+        return m.matches();
+    }
+
+    private void sendMail(String user) {
+
+        String mail = Email.getText().toString().trim();
+        String message = "Dear "+user+",\n\nThank You for choosing GREB!\n\nWe are very happy to welcome you as a registered customer of GREB.\nWe look forward to first journey with us.\nIf you need any assistance please contact grebcustomerservice2156@gmail.com\n\nBest Regards,\nGREB Customer Center";
+        String subject = "Greb User Registration";
+
+        //Send Mail
+        JavaMailAPI javaMailAPI = new JavaMailAPI(this,mail,subject,message);
+
+        javaMailAPI.execute();
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
+        Intent intent= new Intent(RegisterPage.this,MainActivity.class);
+        startActivity(intent);
     }
 
 
