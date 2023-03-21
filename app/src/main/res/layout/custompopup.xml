@@ -62,7 +62,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/buttonstyle"
-                        android:hint="Please select a driver"
+                        android:hint="Enter Driver Name"
                         android:textColor="#FBFBFB"
                         android:textColorHint="#F6F3F3" />
 

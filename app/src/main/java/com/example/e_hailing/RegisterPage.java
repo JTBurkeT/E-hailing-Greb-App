@@ -33,7 +33,7 @@ public class RegisterPage extends AppCompatActivity {
         setContentView(R.layout.activity_register_page);
 
         initView();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Customer");
 
 

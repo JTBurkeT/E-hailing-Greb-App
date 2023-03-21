@@ -20,8 +20,8 @@ public class adminDataBase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase DB) {
         DB.execSQL("create Table AdminData(UserName TEXT primary key, Password TEXT)");
         ContentValues contentValues = new ContentValues();
-        contentValues.put("UserName", "admin123");
-        contentValues.put("Password", "123");
+        contentValues.put("UserName", "-");
+        contentValues.put("Password", "-");
         DB.insert("AdminData", null, contentValues);
     }
 
@@ -35,8 +35,8 @@ public class adminDataBase extends SQLiteOpenHelper {
     public void insertAdmin() {
         SQLiteDatabase DB = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("UserName", "admin123");
-        contentValues.put("Password", "123");
+        contentValues.put("UserName", "-");
+        contentValues.put("Password", "-");
         DB.insert("AdminData", null, contentValues);
 
     }

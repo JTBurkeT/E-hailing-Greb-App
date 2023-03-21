@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Customer");
-       // DB2 =new adminDataBase(this);
-        //DB2.insertAdmin();
+        DB2 =new adminDataBase(this);
+        DB2.insertAdmin();
 
 
 //To navigate the user to the register page

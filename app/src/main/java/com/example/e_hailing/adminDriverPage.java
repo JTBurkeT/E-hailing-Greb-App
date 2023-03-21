@@ -48,7 +48,7 @@ public class adminDriverPage extends AppCompatActivity {
         addBtn= findViewById(R.id.addBtn);
         removeBtn=findViewById(R.id.removeBtn);
         tableLayout=findViewById(R.id.tableLayout);
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Driver");
         getAllDriver();
         list = new ArrayList<>();

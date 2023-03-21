@@ -33,7 +33,7 @@ Here we are using firebase to get the realtime data about our customer and add i
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_customer_page2);
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Customer");
         list=new ArrayList<>();
         recyclerView = findViewById(R.id.customerList);

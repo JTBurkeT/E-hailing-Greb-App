@@ -154,7 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         all4Driver = new ArrayList<>();
         all6Driver = new ArrayList<>();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Driver");
         customerDatabaseReference = firebaseDatabase.getReference("Customer");
         getAll4Location();
@@ -191,7 +191,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         EditText tf_location = findViewById(R.id.TF_location);
         String location = tf_location.getText().toString();
-        Places.initialize(getApplicationContext(), "AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI");
+        Places.initialize(getApplicationContext(), "-");
         tf_location.setFocusable(false);
         tf_location.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,7 +298,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    //This iis to read the current location of the user and display it as the marker
+    //This is to read the current location of the user and display it as the marker
     @Override
     public void onLocationChanged(Location location) {
 
@@ -339,7 +339,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String location = tf_location.getText().toString();
 
 
-                Places.initialize(getApplicationContext(), "AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI");
+                Places.initialize(getApplicationContext(), "-");
                 tf_location.setFocusable(false);
                 tf_location.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -483,7 +483,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 @Override
                                 public void onClick(View v) {
 
-
                                     driverAdapter driverAdapter;
                                     myDialog.setContentView(R.layout.custompopup);
                                     setToPending(customerName);
@@ -530,7 +529,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                                 temp.clear();
                                                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                                     Driver dr = ds.getValue(Driver.class);
-                                                                    String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
+                                                                    String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + dr.getCurrentLongLa() + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=-";
                                                                     new GeoTask(MapsActivity.this).execute(url);
                                                                     final Handler handler = new Handler(Looper.getMainLooper());
                                                                     list.add(dr);
@@ -546,7 +545,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                                             try {
                                                                                 String[] st = nowTime.split(":");
                                                                                 if (list.get(i).getCapacity() >= capacity && list.get(i).getStatus().equals("Available")) {
-                                                                                    Log.d("sahigvaoivbiavb0w9ugr", "sdasld" + temp.get(i).getCheck());
+                                                                                    Log.d("--", "-" + temp.get(i).getCheck());
                                                                                     if (temp.get(i).getCheck() == true) {
                                                                                         filtered.add(list.get(i));
                                                                                         filtered.get(filtered.size() - 1).setArrivedTime(timeFormatter(st[0] + ":" + String.valueOf(temp.get(i).getTime() + Integer.parseInt(st[1])))); //TODO : add with the current time
@@ -601,7 +600,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                             Toast.makeText(MapsActivity.this, "Driver " + driverName + " not found, Please Try Again", Toast.LENGTH_SHORT).show();
 
                                                         } else {
-                                                            String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + longLa + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI";
+                                                            String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + longLa + "&destinations=" + latitude + "," + longitude + "&mode=driving&language=eg-EG&avoid=tolls&key=-";
                                                             new GetDuration(MapsActivity.this).execute(url);
                                                             myDialog.dismiss();
                                                             bottomSheetDialog.dismiss();
@@ -754,7 +753,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin=" + longLa);
         googleDirectionsUrl.append(("&destination=" + latitude + "," + longitude));
-        googleDirectionsUrl.append("&key=" + "AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI");
+        googleDirectionsUrl.append("&key=" + "-");
 
         return googleDirectionsUrl.toString();
     }
@@ -763,7 +762,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin=" + latitude + "," + longitude);
         googleDirectionsUrl.append(("&destination=" + addressList.get(0).getLatitude() + "," + addressList.get(0).getLongitude()));
-        googleDirectionsUrl.append("&key=" + "AIzaSyAg5EmD0YQUHjrMd5Aq0qwLaY24ZZCL3LI");
+        googleDirectionsUrl.append("&key=" + "-");
 
         return googleDirectionsUrl.toString();
     }
@@ -1034,8 +1033,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run() {
                 statusTxt.setText("Reached, have a good day.");
                 setToReached(userName);
-                reSet(driverName);
-                setToFree(customerName);
+//                reSet(driverName);
+//                setToFree(customerName);
                 btnComment.setVisibility(View.VISIBLE);
                 setClick();
             }
@@ -1045,6 +1044,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         handler3.postDelayed(new Runnable() {
             @Override
             public void run() {
+                reSet(driverName);
+                setToFree(customerName);
                 statusTxt.setVisibility(View.INVISIBLE);
                 mMap.clear();
 

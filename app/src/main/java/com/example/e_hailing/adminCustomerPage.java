@@ -26,7 +26,7 @@ public class adminCustomerPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_customer_page);
         tableLayout=findViewById(R.id.tableLayout);
-        firebaseDatabase = FirebaseDatabase.getInstance("https://e-hailing-um-default-rtdb.firebaseio.com/");
+        firebaseDatabase = FirebaseDatabase.getInstance("-");
         databaseReference = firebaseDatabase.getReference("Customer");
         getAllCustomer();
     }

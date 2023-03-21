@@ -10,9 +10,9 @@
 
     <LinearLayout
         android:id="@+id/left"
-        android:layout_width="355dp"
+        android:layout_width="346dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20sp"
+                android:layout_marginLeft="10sp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="20sp"
+                android:layout_marginLeft="10sp"
                 android:orientation="horizontal">
 
                 <TextView
